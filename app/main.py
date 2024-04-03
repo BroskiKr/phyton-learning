@@ -1,34 +1,37 @@
-from fastapi import FastAPI,status,HTTPException,Response 
-from datetime import datetime 
+from fastapi import FastAPI,status,HTTPException
 from pydantic import BaseModel
 from typing import Union
-import json
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import time
 
 app = FastAPI() 
- 
+
+
+while True:
+  try:
+    conn = psycopg2.connect(host='localhost',database='postgres',user='postgres',password ='krohmalA',cursor_factory=RealDictCursor)
+    cursor = conn.cursor()
+    print("Database connection was successful! ")
+    break
+  except Exception as error:
+    print("Connecting to database failed")
+    print("Error:",error)
+    time.sleep(2)
+
 class NewPost(BaseModel): 
   title:str 
   body:str 
  
-def takeData(filePath = 'data.txt'):
-  data = None
-  with open(filePath,'r',encoding='utf-8') as file:
-    data = json.load(file)
-  return data
 
-def editData(data,filePath = 'data.txt'):
-  with open(filePath, 'w', encoding='utf-8') as file: 
-    json.dump(data,file,indent=4, ensure_ascii=False)
-
+'''
 def searchPost(text):
-  searchedPosts = []
-  for post in posts:
-    if text in post["title"].lower() or text in post["body"].lower():
-      searchedPosts.append(post)
-  if searchedPosts: return searchedPosts
+  cursor.execute('SELECT * FROM posts WHERE title LIKE %s OR body LIKE %s',(text,text))
+  searched_posts = cursor.fetchall()
+  if searched_posts: return searched_posts
   return {"error": "Such post doesnt exist"}
+'''
 
-posts = takeData()
 
 @app.get('/') 
 def read_root(): 
@@ -37,47 +40,46 @@ def read_root():
 ## get 
 @app.get('/posts') 
 def read_posts(search: Union[str, None] = None):
-  if search:
-    return searchPost(search.lower())
+  cursor.execute('SELECT * FROM posts') ## чи треба ставити """....."""
+  posts = cursor.fetchall()
+  ##if search:
+    ##return searchPost(search.lower())
   return posts
  
 @app.get('/posts/{post_id}') 
 def read_post(post_id:int): 
-  for post in posts: 
-    if post["id"] == post_id: 
-      return post 
+  cursor.execute('SELECT * FROM posts WHERE id = %s ', (str(post_id),))  ##нашо кома
+  post = cursor.fetchone()
+  if post:
+    return post
   raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'post with id {post_id} was not found') 
  
  
 ##post 
 @app.post('/posts',status_code=status.HTTP_201_CREATED) 
 def create_post(newPost: NewPost): 
-  post = dict(newPost) 
-  post["id"] = max(post["id"] for post in posts) + 1 
-  post["date"] = datetime.now().isoformat()
-  posts.append(post)
-  editData(posts) 
+  cursor.execute('INSERT INTO posts (body,title) VALUES (%s,%s) RETURNING *', (newPost.body,newPost.title))
+  post = cursor.fetchone()
+  conn.commit()
   return post  
 
 ##update
 @app.put('/posts/{post_id}')
 def update_posts(post_id:int,updatedPost:NewPost):
-  upPost = dict(updatedPost)
-  for post in posts: 
-    if post['id'] == post_id: 
-      post["title"] = upPost["title"]
-      post["body"] = upPost["body"]
-      editData(posts) 
-      return post
+  cursor.execute('UPDATE posts SET title = %s, body = %s WHERE id = %s RETURNING *',(updatedPost.title,updatedPost.body,post_id))
+  updatedPost = cursor.fetchone()
+  conn.commit()
+  if updatedPost:
+    return updatedPost
   raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'post with id {post_id} was not found')
  
 ##delete 
 @app.delete('/posts/{post_id}',status_code=status.HTTP_204_NO_CONTENT) 
 def delete_post(post_id:int): 
-  for post in posts: 
-    if post['id'] == post_id: 
-      posts.remove(post) 
-      editData(posts) 
-      return Response(status_code=status.HTTP_204_NO_CONTENT) 
-  raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'post with id {post_id} was not found')
+  cursor.execute('DELETE FROM posts WHERE id = %s RETURNING *' ,(str(post_id),))
+  deletedPost = cursor.fetchone()
+  conn.commit()
+  if deletedPost == None:
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'post with id {post_id} was not found') 
+  
 
