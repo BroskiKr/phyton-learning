@@ -12,7 +12,11 @@ To run this FastAPI application, you need to have Python installed on your syste
 2. Install FastAPI and Uvicorn (ASGI server) using pip:
 `pip install fastapi uvicorn`
 
-3. Run the FastAPI application using Uvicorn:
+3. Install FastAPI and Uvicorn (ASGI server) using pip:
+`pip install python-dotenv`
+   3.1 Create `.env` file in the root of the project use `.env-template` as an example and set your PostgreSQL connection URL   
+
+4. Run the FastAPI application using Uvicorn:
 `uvicorn main:app --reload`
 
-4. Once the server starts successfully, you can access the API endpoints from your browser or API testing tools like Postman or curl.
+5. Once the server starts successfully, you can access the API endpoints from your browser or API testing tools like Postman or curl.
