@@ -20,3 +20,4 @@ To run this FastAPI application, you need to have Python installed on your syste
 `uvicorn main:app --reload`
 
 5. Once the server starts successfully, you can access the API endpoints from your browser or API testing tools like Postman or curl.
+6. You can access Swagger for service here http://127.0.0.1:8000/docs
