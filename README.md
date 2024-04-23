@@ -28,6 +28,7 @@ and set the path to your local database
 
 Once the server starts successfully, you can access the API endpoints from your browser or API testing tools like Postman or curl.
 
+You can also access Swagger for service here http://127.0.0.1:8000/docs
 
 # Migrations:
 Database migrations are managed using Alembic. Migrations are stored in the migrations directory. You can generate and apply migrations using the following Alembic commands:
