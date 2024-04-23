@@ -20,20 +20,18 @@ To run this FastAPI application, you need to have Python installed on your syste
 3. In file 'alembic.ini' find the line `sqlalchemy.url = ... `
 and set the path to your local database
 
-OR
-
-3.1 Install python-dotenv and create `.env` file in the root of the project use `.env-template` as an example and set your PostgreSQL connection URL   
+4. Install python-dotenv and create `.env` file in the root of the project use `.env-template` as an example and set your PostgreSQL connection URL   
 `pip install python-dotenv` 
 
-4. Apply database migrations using alembic:
+5. Apply database migrations using alembic:
 `alembic upgrade head`
 
-5. Run the FastAPI application using Uvicorn:
+6. Run the FastAPI application using Uvicorn:
 `uvicorn main:app --reload`
 
-6. Once the server starts successfully, you can access the API endpoints from your browser or API testing tools like Postman or curl.
+7. Once the server starts successfully, you can access the API endpoints from your browser or API testing tools like Postman or curl.
 
-7. You can also access Swagger for service here http://127.0.0.1:8000/docs
+8. You can also access Swagger for service here http://127.0.0.1:8000/docs
 
 
 # Migrations:
