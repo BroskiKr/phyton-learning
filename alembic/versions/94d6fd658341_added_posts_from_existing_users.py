@@ -119,9 +119,9 @@ def upgrade() -> None:
         "title": "The Science of Happiness: Strategies for a Fulfilling Life",
         "body": "Discover evidence-based approaches to cultivate happiness and enhance overall life satisfaction.",
         "owner_id": 3
-    }
+    },
         ])
 
 
 def downgrade() -> None:
-    op.execute("DELETE FROM posts WHERE id > 0 AND id < 11")
+    op.execute("DELETE FROM posts WHERE owner_id > 1 AND owner_id < 6")
