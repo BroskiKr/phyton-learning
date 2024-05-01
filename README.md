@@ -17,7 +17,7 @@ To run this FastAPI application, you need to have Python installed on your syste
 
 2. Navigate to the project directory in your terminal.
 
-3. Install python-dotenv and create `.env` file in the root of the project use `.env-template` as an example and set your PostgreSQL connection URL   
+3. Install python-dotenv and create `.env` file in the root of the project use `.env-template` as an example and set your PostgreSQL connection URL and SECRET_KEY for jwt auth  
 `pip install python-dotenv` 
 
 4. Apply database migrations using alembic:
