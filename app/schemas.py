@@ -28,12 +28,11 @@ class PostResponse(NewPost):
   id:int
   created_at: datetime
   owner: UserResponse
-
   class Config:
     orm_mode:True
 
 class UserLogin(BaseModel):
-  last_name:str
+  username:str
   password:str
 
 class Token(BaseModel):
