@@ -7,8 +7,8 @@ To run this FastAPI application, you need to have Python installed on your syste
 
 1. Install Python from python.org if you haven't already.
 
-2. Install FastAPI, Uvicorn (ASGI server), psycopg2 (PostgreSQL adapter), sqlalchemy, and alembic for managing database migrations using pip:
-`pip install fastapi uvicorn psycopg2 sqlalchemy alembic`
+2. Install FastAPI, Uvicorn (ASGI server), psycopg2 (PostgreSQL adapter),passlib,bcrypt(4.0.1), python-jose[cryptography], sqlalchemy and alembic for managing database migrations using pip:
+`pip install fastapi uvicorn psycopg2 sqlalchemy alembic passlib bcrypt==4.0.1 python-jose[cryptography] python-multipart`
 
 
 # How to Run:
@@ -17,7 +17,7 @@ To run this FastAPI application, you need to have Python installed on your syste
 
 2. Navigate to the project directory in your terminal.
 
-3. Install python-dotenv and create `.env` file in the root of the project use `.env-template` as an example and set your PostgreSQL connection URL   
+3. Install python-dotenv and create `.env` file in the root of the project use `.env-template` as an example and set your PostgreSQL connection URL and SECRET_KEY for jwt auth  
 `pip install python-dotenv` 
 
 4. Apply database migrations using alembic:
