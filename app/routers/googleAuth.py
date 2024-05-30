@@ -1,8 +1,13 @@
-from fastapi import Depends,APIRouter
+from fastapi import Depends,APIRouter,HTTPException,status
 from fastapi.security import OAuth2PasswordBearer
 import requests
+import json
 from jose import jwt
 from app.settings import CLIENT_ID,CLIENT_SECRET
+
+from ..database import get_db
+from sqlalchemy.orm import Session
+from .. import models,oauth2
 
 router = APIRouter(
   tags=['GoogleAuth']
@@ -20,6 +25,7 @@ def login_google():
         "url": f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email&access_type=offline"
     }
 
+
 @router.get("/auth/google")
 def auth_google(code: str):
     token_url = "https://accounts.google.com/o/oauth2/token"
@@ -31,11 +37,24 @@ def auth_google(code: str):
         "grant_type": "authorization_code",
     }
     response = requests.post(token_url, data=data)
-    access_token = response.json().get("access_token")
-    user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo", headers={"Authorization": f"Bearer {access_token}"})
-    return user_info.json()
+    google_access_token = response.json().get("access_token")
+    user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo", headers={"Authorization": f"Bearer {google_access_token}"})
+    user_info = user_info.json()
+    print(user_info)
+    
+    def verify_google_credentials(google_data:dict,db:Session = Depends(get_db)):
+        print(google_data)
+        email = google_data['email']
+        user = db.query(models.User).filter(models.User.email == email).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail=f"User did not exist")
+        access_token = oauth2.create_access_token(data={"user_id":user.id})
+        return {"access_token":access_token, "token_type":"bearer"}
+    
 
-# @router.get("/token")
-# def get_token(token: str = Depends(oauth2_scheme)):
-#     return jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
+    token = verify_google_credentials(user_info)
+    print(token)
+
+    return [user_info,token]
+
 

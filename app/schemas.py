@@ -13,13 +13,15 @@ class UpdatePost(BaseModel):
 
 class NewUser(BaseModel): 
   first_name:str 
-  last_name:str 
+  last_name:str
+  email:str 
   password:str
 
 class UserResponse(BaseModel):
   id:int
   first_name:str 
   last_name:str 
+  email:str
   created_at: datetime
   class Config:
     orm_mode:True
