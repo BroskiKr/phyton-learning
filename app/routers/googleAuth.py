@@ -1,13 +1,11 @@
 from fastapi import Depends,APIRouter,HTTPException,status
 from fastapi.security import OAuth2PasswordBearer
 import requests
-import json
-from jose import jwt
 from app.settings import CLIENT_ID,CLIENT_SECRET
 
-from ..database import get_db
+from app.database import get_db
 from sqlalchemy.orm import Session
-from .. import models,oauth2
+from app import models,oauth2
 
 router = APIRouter(
   tags=['GoogleAuth']
