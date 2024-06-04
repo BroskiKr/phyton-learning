@@ -53,6 +53,6 @@ def update_user(user_id:int,updatedUser: schemas.NewUser,db:Session = Depends(ge
 def delete_user(user_id:int,db:Session = Depends(get_db),user_data:int = Depends(oauth2.get_current_user)): 
   user = db.query(models.User).filter(models.User.id == user_id)
   if user.first() == None:
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'post with id {post_id} was not found') 
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'post with id {user_id} was not found') 
   user.delete(synchronize_session=False)
   db.commit()
