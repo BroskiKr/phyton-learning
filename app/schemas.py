@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,EmailStr
 from datetime import datetime
 from typing import Optional
 
@@ -14,24 +14,26 @@ class UpdatePost(BaseModel):
 class NewUser(BaseModel): 
   first_name:str 
   last_name:str
-  email:str 
+  email:EmailStr
   password:str
 
 class UserResponse(BaseModel):
   id:int
   first_name:str 
   last_name:str 
-  email:str
+  email:EmailStr
   created_at: datetime
+
   class Config:
-    orm_mode:True
+    orm_mode = True
 
 class PostResponse(NewPost):
   id:int
   created_at: datetime
   owner: UserResponse
+  
   class Config:
-    orm_mode:True
+    orm_mode = True
 
 class UserLogin(BaseModel):
   username:str

@@ -13,8 +13,6 @@ router = APIRouter(
 @router.get('/',response_model=List[schemas.UserResponse]) 
 def read_users(search: Union[str, None] = None,db:Session = Depends(get_db),user_data:int = Depends(oauth2.get_current_user)) :
   users = db.query(models.User).all()
-  print(type(users))
-  print(users)
   return users
  
 @router.get('/{user_id}',response_model=schemas.UserResponse) 
