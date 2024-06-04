@@ -20,7 +20,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     op.add_column('users', sa.Column('password', sa.String(), nullable=True))
-    op.execute(f"UPDATE users SET password = '{utils.hash('1234')}' WHERE password IS NULL")
+    op.execute(f"UPDATE users SET password = '$2b$12$c/hk9viBU9LLX1I2FRcYGuijgxv6Js0gf3vV0rLfsiNkwJ/CmGeR.' WHERE password IS NULL")
     op.alter_column('users', 'password', nullable=False)
 
 

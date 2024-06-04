@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import psycopg2
-from .database import engine
-from .routers import user,post,auth,googleAuth
+from app.database import engine
+from app.routers import user,post,auth,googleAuth
 from fastapi.middleware.cors import CORSMiddleware
 
 

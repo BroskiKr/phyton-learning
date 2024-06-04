@@ -7,8 +7,8 @@ To run this FastAPI application, you need to have Python installed on your syste
 
 1. Install Python from python.org if you haven't already.
 
-2. Install FastAPI, Uvicorn (ASGI server), psycopg2 (PostgreSQL adapter),passlib,bcrypt(4.0.1), python-jose[cryptography], sqlalchemy and alembic for managing database migrations using pip:
-`pip install fastapi uvicorn psycopg2 sqlalchemy alembic passlib bcrypt==4.0.1 python-jose[cryptography] python-multipart`
+2. Install all requirements needed to start the application using pip:
+`pip install -r requirements.txt`
 
 
 # How to Run:
