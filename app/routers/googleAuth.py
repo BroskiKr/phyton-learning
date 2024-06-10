@@ -25,7 +25,7 @@ def login_google():
 
 
 
-def verify_google_credentials(google_data:dict,db:Session):
+def get_access_token(google_data:dict,db:Session):
     email = google_data['email']
     user = db.query(models.User).filter(models.User.email == email).first()
     if not user:
@@ -47,7 +47,7 @@ def auth_google(code: str,db:Session = Depends(get_db)):
     google_access_token = response.json().get("access_token")
     user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo", headers={"Authorization": f"Bearer {google_access_token}"})
     user_info = user_info.json()
-    token = verify_google_credentials(user_info,db)
+    token = get_access_token(user_info,db)
     return token
 
 
