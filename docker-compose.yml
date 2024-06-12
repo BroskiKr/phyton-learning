@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  mongo-init:
+    image: python:3.8-slim
+    volumes:
+      - ./init-MongoDb.py:/init-MongoDb.py
+    depends_on:
+      - mongo
+    entrypoint:
+      - /bin/sh
+      - -c
+      - pip install pymongo && python /init-MongoDb.py
+
+volumes:
+  mongo-data:
+
+
