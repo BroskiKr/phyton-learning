@@ -18,19 +18,19 @@ class NewUser(BaseModel):
   password:str
 
 class UserResponse(BaseModel):
-  id:int
+  id:str
   first_name:str 
   last_name:str 
   email:EmailStr
   created_at: datetime
 
-  class Config:
-    orm_mode = True
+  # class Config:
+  #   orm_mode = True
 
 class PostResponse(NewPost):
   id:int
   created_at: datetime
-  owner: UserResponse
+  # owner: UserResponse
   
   class Config:
     orm_mode = True

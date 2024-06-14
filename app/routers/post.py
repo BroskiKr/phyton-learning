@@ -12,9 +12,9 @@ router = APIRouter(
 ## get 
 @router.get('/',response_model=List[schemas.PostResponse]) 
 def read_posts(user_id: Union[str, None] = None,db:Session = Depends(get_db),user_data:int = Depends(oauth2.get_current_user)) :
-  if user_id and user_id != "admin":
-    users_posts = db.query(models.Post).filter(models.Post.owner_id == user_id).all()
-    return users_posts
+  # if user_id and user_id != "admin":
+  #   users_posts = db.query(models.Post).filter(models.Post.owner_id == user_id).all()
+  #   return users_posts
   posts = db.query(models.Post).all()
   return posts
  
@@ -29,9 +29,9 @@ def read_post(post_id:int,db:Session = Depends(get_db),user_data:int = Depends(o
 ##post 
 @router.post('/',status_code=status.HTTP_201_CREATED,response_model=schemas.PostResponse) 
 def create_post(newPost: schemas.NewPost,db:Session = Depends(get_db),user_data:int = Depends(oauth2.get_current_user)): 
-  owner = db.query(models.User).filter(models.User.id == newPost.owner_id).first()
-  if not owner:
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'User with id {newPost.owner_id} was not found') 
+  # owner = db.query(models.User).filter(models.User.id == newPost.owner_id).first()
+  # if not owner:
+  #   raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'User with id {newPost.owner_id} was not found') 
   post = models.Post(**newPost.dict())
   db.add(post)
   db.commit()
