@@ -1,7 +1,7 @@
 from fastapi import status,HTTPException,Depends,APIRouter
 from app import schemas,utils,oauth2
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
-from app.mongoDb import users_collection
+from app.mongo_db import users_collection
 
 router = APIRouter(
   prefix='/login',

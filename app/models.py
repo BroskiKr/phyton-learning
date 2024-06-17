@@ -1,4 +1,4 @@
-from app.postgresDb import Base
+from app.postgres_db import Base
 from sqlalchemy import Column, Integer,String,ForeignKey
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
@@ -12,8 +12,8 @@ class Post(Base):
   title = Column(String,nullable=False)
   body = Column(String,nullable=False)
   created_at = Column(TIMESTAMP(timezone=True),nullable=False,server_default=text('now()'))
-  owner_id = Column(Integer,ForeignKey("users.id", ondelete="CASCADE"),nullable=False)
-  owner = relationship("User")
+  owner_id = Column(String,nullable=False)
+  
 
 class User(Base):
   __tablename__ = "users"

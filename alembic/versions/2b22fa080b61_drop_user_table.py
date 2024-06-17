@@ -62,3 +62,5 @@ def downgrade() -> None:
     op.execute(f"UPDATE users SET email = 'krohmalnyj.andr@gmail.com' WHERE last_name='Krokhmalnyy'")
     op.execute(f"UPDATE users SET email = 'somegmail@gmail.com' WHERE email IS NULL ")
     op.alter_column('users', 'email', nullable=False)
+
+    op.create_foreign_key('post_users_fk',source_table='posts',referent_table='users',local_cols=['owner_id'],remote_cols=['id'],ondelete='CASCADE')

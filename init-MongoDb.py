@@ -1,16 +1,12 @@
 from pymongo import MongoClient
 from datetime import datetime
 
-# Підключення до MongoDB
 client = MongoClient('mongodb://mongo:27017/')
 
-# Створення бази даних 'usersDB'
 db = client['usersDB']
 
-# Створення колекції 'users'
 users = db['users']
 
-# Додавання початкових документів
 initial_users = [
     {
         "first_name": "admin",

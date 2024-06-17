@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 import requests
 from app.settings import CLIENT_ID,CLIENT_SECRET
 
-from app.mongoDb import users_collection
+from app.mongo_db import users_collection
 from app import oauth2
 
 router = APIRouter(

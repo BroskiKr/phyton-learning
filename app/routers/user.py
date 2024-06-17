@@ -1,7 +1,7 @@
 from fastapi import status,HTTPException,Depends,APIRouter
 from typing import Union,List
 from app import schemas,utils,oauth2
-from app.mongoDb import users_collection
+from app.mongo_db import users_collection
 from datetime import datetime
 from bson import ObjectId
 

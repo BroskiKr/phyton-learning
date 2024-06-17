@@ -5,7 +5,7 @@ from typing import Optional
 class NewPost(BaseModel): 
   title:str 
   body:str
-  owner_id:int
+  owner_id:Optional[str] = None
 
 class UpdatePost(BaseModel):
   title:str
@@ -24,8 +24,6 @@ class UserResponse(BaseModel):
   email:EmailStr
   created_at: datetime
 
-  # class Config:
-  #   orm_mode = True
 
 class PostResponse(NewPost):
   id:int
