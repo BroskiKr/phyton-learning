@@ -1,9 +1,10 @@
 from fastapi import status,HTTPException,Depends,APIRouter
-from typing import Union,List
+from typing import List
 from app import models,schemas,oauth2
 from app.postgres_db import get_db
 from sqlalchemy.orm import Session
 from app.mongo_db import users_collection
+from bson import ObjectId
 
 
 router = APIRouter(
@@ -14,7 +15,8 @@ router = APIRouter(
 ## get 
 @router.get('/',response_model=List[schemas.PostResponse]) 
 def read_posts(db:Session = Depends(get_db),user_data:str = Depends(oauth2.get_current_user)) :
-  if user_data.id == "6669c681ac6e5df9b0fd687a":
+  user = users_collection.find_one({"_id": ObjectId(user_data.id)})
+  if user['last_name'] == "admin":
     posts = db.query(models.Post).all()
     return posts
   users_posts = db.query(models.Post).filter(models.Post.owner_id == user_data.id).all()
