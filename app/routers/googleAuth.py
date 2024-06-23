@@ -3,9 +3,8 @@ from fastapi.security import OAuth2PasswordBearer
 import requests
 from app.settings import CLIENT_ID,CLIENT_SECRET
 
-from app.database import get_db
-from sqlalchemy.orm import Session
-from app import models,oauth2
+from app.mongo_db import users_collection
+from app import oauth2
 
 router = APIRouter(
   tags=['GoogleAuth']
@@ -25,16 +24,17 @@ def login_google():
 
 
 
-def get_access_token(google_data:dict,db:Session):
+def get_access_token(google_data:dict):
     email = google_data['email']
-    user = db.query(models.User).filter(models.User.email == email).first()
+    user = users_collection.find_one({"email": email})
     if not user:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail=f"User did not exist")
-    access_token = oauth2.create_access_token(data={"user_id":user.id})
+    user_id = str(user['_id'])
+    access_token = oauth2.create_access_token(data={"user_id":user_id})
     return {"access_token":access_token, "token_type":"bearer"}
 
 @router.get("/auth/google")
-def auth_google(code: str,db:Session = Depends(get_db)):
+def auth_google(code: str):
     token_url = "https://accounts.google.com/o/oauth2/token"
     data = {
         "code": code,
@@ -47,7 +47,7 @@ def auth_google(code: str,db:Session = Depends(get_db)):
     google_access_token = response.json().get("access_token")
     user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo", headers={"Authorization": f"Bearer {google_access_token}"})
     user_info = user_info.json()
-    token = get_access_token(user_info,db)
+    token = get_access_token(user_info)
     return token
 
 

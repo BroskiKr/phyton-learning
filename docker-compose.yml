@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  mongo-init:
+    image: python:3.8-slim
+    volumes:
+      - ./init-MongoDb.py:/init-MongoDb.py
+    depends_on:
+      - mongo
+    entrypoint:
+      - /bin/sh
+      - -c
+      - pip install pymongo && python /init-MongoDb.py
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: krohmalA
+      POSTGRES_DB: FastAPI
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  mongo-data:
+  postgres-data:
+
+

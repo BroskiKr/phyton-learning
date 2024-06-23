@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import psycopg2
-from app.database import engine
+from app.postgres_db import engine
 from app.routers import user,post,auth,googleAuth
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -16,7 +16,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# models.Base.metadata.create_all(bind=engine)
 
 app.include_router(post.router)
 app.include_router(user.router)

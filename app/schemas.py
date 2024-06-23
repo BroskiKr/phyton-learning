@@ -5,7 +5,7 @@ from typing import Optional
 class NewPost(BaseModel): 
   title:str 
   body:str
-  owner_id:int
+  owner_id:Optional[str] = None
 
 class UpdatePost(BaseModel):
   title:str
@@ -18,19 +18,17 @@ class NewUser(BaseModel):
   password:str
 
 class UserResponse(BaseModel):
-  id:int
+  id:str
   first_name:str 
   last_name:str 
   email:EmailStr
   created_at: datetime
 
-  class Config:
-    orm_mode = True
 
 class PostResponse(NewPost):
   id:int
   created_at: datetime
-  owner: UserResponse
+  # owner: UserResponse
   
   class Config:
     orm_mode = True
@@ -44,6 +42,6 @@ class Token(BaseModel):
   token_type:str
 
 class TokenData(BaseModel):
-  id:Optional[int] = None
+  id:Optional[str] = None
 
 
