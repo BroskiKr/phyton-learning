@@ -42,6 +42,13 @@ initial_users = [
         "created_at": datetime.now(),
         "password": "$2b$12$c/hk9viBU9LLX1I2FRcYGuijgxv6Js0gf3vV0rLfsiNkwJ/CmGeR.",
         "email": "somegmail@gmail.com"
+    },
+    {
+        "first_name": "Test",
+        "last_name": "Test",
+        "created_at": datetime.now(),
+        "password": "$2b$12$c/hk9viBU9LLX1I2FRcYGuijgxv6Js0gf3vV0rLfsiNkwJ/CmGeR.",
+        "email": "test@gmail.com"
     }
 ]
 

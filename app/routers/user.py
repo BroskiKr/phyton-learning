@@ -5,8 +5,6 @@ from app.mongo_db import users_collection
 from datetime import datetime
 from bson import ObjectId
 
-
-
 router = APIRouter(
   prefix='/users',
   tags=['Users']
