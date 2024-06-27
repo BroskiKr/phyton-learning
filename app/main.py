@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from app.postgres_db import engine
-from app.routers import user,post,auth,googleAuth
+from app.routers import user, post, auth, googleAuth
 from fastapi.middleware.cors import CORSMiddleware
 
 
-app = FastAPI() 
+app = FastAPI()
 
-origins=["*"]
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -22,7 +22,6 @@ app.include_router(auth.router)
 app.include_router(googleAuth.router)
 
 
-@app.get('/') 
-def read_root(): 
-  return 'Home' 
-
+@app.get("/")
+def read_root():
+    return "Home"
