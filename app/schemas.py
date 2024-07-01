@@ -1,47 +1,52 @@
-from pydantic import BaseModel,EmailStr
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional
 
-class NewPost(BaseModel): 
-  title:str 
-  body:str
-  owner_id:Optional[str] = None
+
+class NewPost(BaseModel):
+    title: str
+    body: str
+    owner_id: Optional[str] = None
+
 
 class UpdatePost(BaseModel):
-  title:str
-  body:str
+    title: str
+    body: str
 
-class NewUser(BaseModel): 
-  first_name:str 
-  last_name:str
-  email:EmailStr
-  password:str
+
+class NewUser(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    password: str
+
 
 class UserResponse(BaseModel):
-  id:str
-  first_name:str 
-  last_name:str 
-  email:EmailStr
-  created_at: datetime
+    id: str
+    first_name: str
+    last_name: str
+    email: EmailStr
+    created_at: datetime
 
 
 class PostResponse(NewPost):
-  id:int
-  created_at: datetime
-  # owner: UserResponse
-  
-  class Config:
-    orm_mode = True
+    id: int
+    created_at: datetime
+    # owner: UserResponse
+
+    class Config:
+        orm_mode = True
+
 
 class UserLogin(BaseModel):
-  username:str
-  password:str
+    username: str
+    password: str
+
 
 class Token(BaseModel):
-  access_token:str
-  token_type:str
+    access_token: str
+    token_type: str
+
 
 class TokenData(BaseModel):
-  id:Optional[str] = None
-
-
+    id: Optional[str] = None

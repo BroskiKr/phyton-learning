@@ -23,7 +23,7 @@ services:
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: krohmalA
+      POSTGRES_PASSWORD: pass123
       POSTGRES_DB: FastAPI
     ports:
       - "5433:5432"
