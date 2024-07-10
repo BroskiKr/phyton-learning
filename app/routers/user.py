@@ -21,14 +21,14 @@ def convert_to_user_response(user_data):
 ## get
 @router.get("/", response_model=List[schemas.UserResponse])
 def read_users(
-    search: Union[str, None] = None, user_data: str = Depends(oauth2.get_current_user)
+    search: Union[str, None] = None, user_data: schemas.TokenData = Depends(oauth2.get_current_user)
 ):
     users = users_collection.find()
     return [convert_to_user_response(user) for user in users]
 
 
 @router.get("/{user_id}", response_model=schemas.UserResponse)
-def read_user(user_id: str, user_data: str = Depends(oauth2.get_current_user)):
+def read_user(user_id: str, user_data: schemas.TokenData = Depends(oauth2.get_current_user)):
     user = users_collection.find_one({"_id": ObjectId(user_id)})
     if user:
         return convert_to_user_response(user)
@@ -43,7 +43,7 @@ def read_user(user_id: str, user_data: str = Depends(oauth2.get_current_user)):
     "/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse
 )
 def create_user(
-    newUser: schemas.NewUser, user_data: str = Depends(oauth2.get_current_user)
+    newUser: schemas.NewUser, user_data: schemas.TokenData = Depends(oauth2.get_current_user)
 ):
     hashed_password = utils.hash(newUser.password)
     newUser.password = hashed_password
@@ -59,7 +59,7 @@ def create_user(
 def update_user(
     user_id: str,
     updatedUser: schemas.NewUser,
-    user_data: str = Depends(oauth2.get_current_user),
+    user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
     user = users_collection.find_one({"_id": ObjectId(user_id)})
     if not user:
@@ -77,7 +77,7 @@ def update_user(
 
 ##delete
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user(user_id: str, user_data: str = Depends(oauth2.get_current_user)):
+def delete_user(user_id: str, user_data: schemas.TokenData = Depends(oauth2.get_current_user)):
     user = users_collection.find_one({"_id": ObjectId(user_id)})
     if user == None:
         raise HTTPException(
