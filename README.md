@@ -27,7 +27,7 @@ This command will build and start the containers defined in your docker-compose.
 `alembic upgrade head`
 
 5. Run the FastAPI application using Uvicorn:
-`uvicorn main:app --reload`
+`uvicorn app.main:app --reload`
 
 6. Once the server starts successfully, you can access the API endpoints from your browser or API testing tools like Postman or curl.
 
