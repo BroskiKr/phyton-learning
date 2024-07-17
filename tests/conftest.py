@@ -1,6 +1,9 @@
 import pytest
 from app.mongo_db import users_collection
 from datetime import datetime
+from app.postgres_db import SessionLocal
+from app.oauth2 import create_access_token
+
 
 @pytest.fixture(scope="session", autouse=True)
 def manage_user():
@@ -28,19 +31,27 @@ def manage_user():
 
 @pytest.fixture()
 def test_user_id():
-  user = users_collection.find({"first_name": "Test",
+  user = users_collection.find_one({"first_name": "Test",
         "last_name": "Test","password": "$2b$12$c/hk9viBU9LLX1I2FRcYGuijgxv6Js0gf3vV0rLfsiNkwJ/CmGeR.",
         "email": "test@gmail.com",})
-  user_id = user[-1]['_id']
-  return user_id
+  user_id = user['_id']
+  return str(user_id)
 
 
+@pytest.fixture(scope='module')
+def auth_header():
+    user = users_collection.find_one({"first_name": "Test",
+        "last_name": "Test","password": "$2b$12$c/hk9viBU9LLX1I2FRcYGuijgxv6Js0gf3vV0rLfsiNkwJ/CmGeR.",
+        "email": "test@gmail.com",})
+    user_id = user['_id']
+    token = create_access_token({"user_id": str(user_id)})
+    auth_header = {"Authorization": f"Bearer {token}"}
+    return auth_header
 
-# @pytest.fixture(autouse=True)
-# def get_auth_header(client):
-#     login_response = client.post(
-#         "/login", data={"username": "Test", "password": "1234"}
-#     )
-#     token = login_response.json().get("access_token")
-#     auth_header = {"Authorization": f"Bearer {token}"}
-#     return auth_header
+@pytest.fixture(scope='module')
+def db():
+  db = SessionLocal()
+  try:
+    yield db
+  finally:
+    db.close()

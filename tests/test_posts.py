@@ -1,48 +1,49 @@
 from fastapi.testclient import TestClient
 from app.main import app
-from tests import utils
+from app import models
 
 client = TestClient(app)
 
-test_user = utils.create_test_user()
-auth_header = utils.get_auth_header(client)
-
-def get_test_post_id():
-    res = client.get('/posts',headers=auth_header)
-    post = res.json()[-1]
-    return post["id"]
-
+def get_test_post_id(db,test_user_id):
+    post = db.query(models.Post).filter(models.Post.owner_id == test_user_id).first()
+    return post.id
 
 # tests
-def test_create_post():
+def test_create_post(auth_header,db,test_user_id):
     res = client.post(
         "/posts",
         headers=auth_header,
-        json={"title": "Test", "body": "Test", "owner_id": '1'},
+        json={"title": "Test", "body": "Test", "owner_id": test_user_id}
     )
+    post = db.query(models.Post).filter(models.Post.owner_id == test_user_id).first()
+    assert post.title == "Test" and post.body == "Test" and post.owner_id == test_user_id
     assert res.json()["body"] == "Test"
     assert res.status_code == 201
 
 
-def test_get_posts():
+def test_get_posts(auth_header):
    res = client.get("/posts", headers=auth_header)
+   posts = res.json()
    assert res.status_code == 200
-   assert res.json()[0]["body"] == "Test"
+   assert len(posts) == 1
+   assert posts[-1]["body"] == "Test"
 
 
-def test_change_post():
+def test_change_post(auth_header,db,test_user_id):
+    test_post_id = get_test_post_id(db,test_user_id)
     res = client.put(
-        f"/posts/{get_test_post_id()}",
+        f"/posts/{test_post_id}",
         headers=auth_header,
         json={"title": "Test1", "body": "Test1"},
     )
-    assert res.json()["title"] == "Test1"
+    post = db.query(models.Post).filter(models.Post.owner_id == test_user_id).first()
+    assert post.title == 'Test1' and post.body == 'Test1'
     assert res.status_code == 200
 
 
-def test_delete_post():
-    res = client.delete(f"/posts/{get_test_post_id()}", headers=auth_header)
-    result = client.get("/posts", headers=auth_header)
-    utils.delete_test_user()
-    assert result.json() == []
+def test_delete_post(auth_header,db,test_user_id):
+    test_post_id = get_test_post_id(db,test_user_id)
+    res = client.delete(f"/posts/{test_post_id}", headers=auth_header)
+    post = db.query(models.Post).filter(models.Post.owner_id == test_user_id).first()
+    assert post == None
     assert res.status_code == 204

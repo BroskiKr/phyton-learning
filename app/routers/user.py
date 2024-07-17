@@ -45,6 +45,12 @@ def read_user(user_id: str, user_data: schemas.TokenData = Depends(oauth2.get_cu
 def create_user(
     newUser: schemas.NewUser, user_data: schemas.TokenData = Depends(oauth2.get_current_user)
 ):
+    user_with_similar_email = users_collection.find_one({"email": newUser.email})
+    if user_with_similar_email or newUser.email == 'test@gmail.com':
+        raise HTTPException(
+            status_code=409,
+            detail="User with this email already exists"
+        )
     hashed_password = utils.hash(newUser.password)
     newUser.password = hashed_password
     user = newUser.dict()

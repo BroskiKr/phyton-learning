@@ -32,7 +32,6 @@ class UserResponse(BaseModel):
 class PostResponse(NewPost):
     id: int
     created_at: datetime
-    # owner: UserResponse
 
     class Config:
         orm_mode = True
