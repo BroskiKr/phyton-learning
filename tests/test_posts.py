@@ -26,7 +26,7 @@ def test_get_posts(auth_header):
    posts = res.json()
    assert res.status_code == 200
    assert len(posts) == 1
-   assert posts[-1]["body"] == "Test"
+   assert posts[0]["body"] == "Test"
 
 
 def test_change_post(auth_header,db,test_user_id):
