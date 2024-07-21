@@ -13,7 +13,7 @@ router = APIRouter(prefix="/posts", tags=["Posts"])
 ## get
 @router.get("/", response_model=List[schemas.PostResponse])
 def read_posts(
-    db: Session = Depends(get_db), user_data: str = Depends(oauth2.get_current_user)
+    db: Session = Depends(get_db), user_data: schemas.TokenData = Depends(oauth2.get_current_user)
 ):
     user = users_collection.find_one({"_id": ObjectId(user_data.id)})
     if user["last_name"] == "admin":
@@ -29,7 +29,7 @@ def read_posts(
 def read_post(
     post_id: int,
     db: Session = Depends(get_db),
-    user_data: str = Depends(oauth2.get_current_user),
+    user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
     post = db.query(models.Post).filter(models.Post.id == post_id).first()
     if post:
@@ -47,7 +47,7 @@ def read_post(
 def create_post(
     newPost: schemas.NewPost,
     db: Session = Depends(get_db),
-    user_data: str = Depends(oauth2.get_current_user),
+    user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
     newPost.owner_id = user_data.id
     post = models.Post(**newPost.dict())
@@ -63,7 +63,7 @@ def update_post(
     post_id: int,
     updatedPost: schemas.UpdatePost,
     db: Session = Depends(get_db),
-    user_data: str = Depends(oauth2.get_current_user),
+    user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
     post_query = db.query(models.Post).filter(models.Post.id == post_id)
     post = post_query.first()
@@ -83,7 +83,7 @@ def update_post(
 def delete_post(
     post_id: int,
     db: Session = Depends(get_db),
-    user_data: str = Depends(oauth2.get_current_user),
+    user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
     post = db.query(models.Post).filter(models.Post.id == post_id)
     if post.first() == None:
