@@ -1,8 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from models import Post
 from abc import ABC, abstractmethod
+from schemas import NewPost
+
 
 
 class BaseScraper(ABC):
@@ -39,7 +40,7 @@ class WebScraper(BaseScraper):
       price = el.find('h4',class_='price').text
       title = el.find('a',class_='title').text
       description = el.find('p',class_='description').text
-      post = Post(title=f"{title} {price}",body=description,owner_id=1)
+      post = NewPost(title=f"{title} {price}",body=description,owner_id=1)
       self.add_post(post)
 
   def scrape_one_page(self,url):
@@ -65,7 +66,7 @@ class WebScraper(BaseScraper):
 
 class ToScrape(BaseScraper):
   toscrape_base_url = 'https://books.toscrape.com/catalogue/'
-  toscrape_page1_url = toscrape_base_url + 'page-1.html'
+  toscrape_page1_url = toscrape_base_url + 'page-45.html'
 
   def create_posts_from_html(self,soup):
     links_to_books = soup.select('.image_container a')
@@ -82,7 +83,7 @@ class ToScrape(BaseScraper):
     if title_element and body_element:
       title = title_element.text
       body = body_element.text
-      post = Post(title,body,owner_id=1)
+      post = NewPost(title=title,body=body,owner_id=1)
       return post
 
   def scrape_one_page(self,url):
