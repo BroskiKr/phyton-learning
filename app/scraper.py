@@ -2,17 +2,20 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from abc import ABC, abstractmethod
-from schemas import NewPost
+from app.schemas import NewPost
 
 class BaseScraper(ABC):
-  future_posts = []
+  posts = []
 
   headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
   }
+
+  def __init__(self, user_id: str):
+        self.user_id = user_id
     
   def add_post(self,post):
-    self.future_posts.append(post)
+    self.posts.append(post)
 
   def scrape_one_page(self,url,next_page_link_find_params):
     page = requests.get(url,headers=self.headers)
@@ -56,7 +59,7 @@ class WebScraper(BaseScraper):
       price = el.find('h4',class_='price').text
       title = el.find('a',class_='title').text
       description = el.find('p',class_='description').text
-      post = NewPost(title=f"{title} {price}",body=description,owner_id=1)
+      post = NewPost(title=f"{title} {price}",body=description,owner_id=self.user_id)
       self.add_post(post)
 
   def scrape(self):
@@ -89,7 +92,7 @@ class ToScrape(BaseScraper):
     if title_element and body_element:
       title = title_element.text
       body = body_element.text
-      post = NewPost(title=title,body=body,owner_id=1)
+      post = NewPost(title=title,body=body,owner_id=self.user_id)
       return post
     
   def scrape(self):

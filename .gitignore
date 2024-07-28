@@ -1,7 +1,7 @@
 
 .env
 .idea
-venv
+.venv
 
 __pycache__
 .coverage
