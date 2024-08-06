@@ -1,5 +1,5 @@
 from fastapi import status, HTTPException, Depends, APIRouter
-from typing import Union, List
+from typing import List
 from app import schemas, utils, oauth2
 from app.mongo_db import users_collection
 from datetime import datetime

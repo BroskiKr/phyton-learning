@@ -1,6 +1,7 @@
 from pymongo import MongoClient
+from app import settings
 
-client = MongoClient("mongodb://localhost:27018/")
+client = MongoClient(settings.MONGODB_URL)
 
 db = client["usersDB"]
 
