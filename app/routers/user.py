@@ -1,5 +1,5 @@
 from fastapi import status, HTTPException, Depends, APIRouter
-from typing import Union, List
+from typing import List
 from app import schemas, utils, oauth2
 from app.mongo_db import users_collection
 from datetime import datetime
@@ -19,11 +19,16 @@ def convert_to_user_response(user_data):
 
 
 ## get
-@router.get("/", response_model=List[schemas.UserResponse])
+@router.get("", response_model=List[schemas.UserResponse])
 def read_users(
-    search: Union[str, None] = None, user_data: schemas.TokenData = Depends(oauth2.get_current_user)
+    user_data: schemas.TokenData = Depends(oauth2.get_current_user),
+    limit:int = 10,
+    page:int = 1,
 ):
-    users = users_collection.find()
+    if limit > 0:
+        users = users_collection.find().skip((page - 1) * limit).limit(limit)
+    else:
+        users = users_collection.find()
     return [convert_to_user_response(user) for user in users]
 
 
@@ -40,7 +45,7 @@ def read_user(user_id: str, user_data: schemas.TokenData = Depends(oauth2.get_cu
 
 ##post
 @router.post(
-    "/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse
+    "", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse
 )
 def create_user(
     newUser: schemas.NewUser, user_data: schemas.TokenData = Depends(oauth2.get_current_user)
