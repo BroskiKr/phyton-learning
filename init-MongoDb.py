@@ -43,7 +43,6 @@ initial_users = [
         "password": "$2b$12$c/hk9viBU9LLX1I2FRcYGuijgxv6Js0gf3vV0rLfsiNkwJ/CmGeR.",
         "email": "somegmail@gmail.com",
     },
-   
 ]
 
 

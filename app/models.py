@@ -4,7 +4,6 @@ from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
 
 
-
 class Post(Base):
     __tablename__ = "posts"
 
