@@ -39,8 +39,16 @@ def downgrade() -> None:
         ),
     )
 
+    users_table = sa.Table(
+        "users",
+        sa.MetaData(),
+        sa.Column('first_name', sa.String(), nullable=False),
+        sa.Column('last_name', sa.String(), nullable=False),
+    )
+
+
     op.bulk_insert(
-        models.User.__table__,
+        users_table,
         [
             {
                 "first_name": "admin",
