@@ -5,7 +5,6 @@ from app.postgres_db import get_db
 from sqlalchemy.orm import Session
 from app.mongo_db import users_collection
 from bson import ObjectId
-from app.scraper import WebScraper, ToScrape
 
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
@@ -139,27 +138,3 @@ def delete_post(
         )
     post.delete(synchronize_session=False)
     db.commit()
-
-
-@router.post(
-    "/autogenerate",
-    status_code=status.HTTP_201_CREATED,
-    response_model=list[schemas.PostResponse],
-)
-def autogenerate_posts(
-    db: Session = Depends(get_db),
-    user_data: schemas.TokenData = Depends(oauth2.get_current_user),
-):
-    webscraper = WebScraper(user_id=user_data.id)
-    # toscrape = ToScrape(user_id=user_data.id)
-    webscraper.scrape()
-    posts = webscraper.posts
-    post_models = [models.Post(**newPost.dict()) for newPost in posts]
-    db.add_all(post_models)
-    db.commit()
-    for post in post_models:
-        db.refresh(post)
-    return post_models
-
-
-# не працює перевірка токена,він навіть не прилітає
