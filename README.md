@@ -1,4 +1,4 @@
-# FastAPI Application with Posts and Users Data in PostgreSQL DB
+# FastAPI Application with Posts and Users Data in PostgreSQL and MongoDB
 
 This FastAPI application serves as a simple API for accessing posts and users stored in a PostgreSQL and MongoDb databases. It provides endpoints to retrieve individual posts and users, list all of them, create, update and delete them.
 
@@ -7,11 +7,13 @@ To run this FastAPI application, you need to have Python installed on your syste
 
 1. Install Python from python.org if you haven't already.
 
-2. Install all requirements needed to start the application using pip:
-`pip install -r requirements.txt`
+2. Install poetry (packaging and dependency management):
+`pip install poetry`
 
-3. Install python-dotenv and create `.env` file in the root of the project use `.env-template` as an example and set your PostgreSQL connection URL and SECRET_KEY for jwt auth  
-`pip install python-dotenv` 
+3. Install all requirements needed to start the application using poetry:
+`poetry install`
+
+4. Create `.env` file in the root of the project use `.env-template` as an example and set your PostgreSQL and MongoDB connection URLs and SECRET_KEY for jwt auth  
 
 # How to Run:
 
