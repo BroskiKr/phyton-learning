@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import user, post, auth, googleAuth
+from app.routers import user, post, auth, googleAuth,generating_posts
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -20,6 +20,7 @@ app.include_router(post.router)
 app.include_router(user.router)
 app.include_router(auth.router)
 app.include_router(googleAuth.router)
+app.include_router(generating_posts.router)
 
 
 @app.get("/")

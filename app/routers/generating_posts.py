@@ -1,30 +1,30 @@
-from app.tasks import generate_posts,generate_daily_posts
+from app.tasks import generate_posts,add_or_update_periodic_task
 from fastapi import status,APIRouter
+from app import schemas,oauth2
+from fastapi import status,Depends
 
 
-router = APIRouter(prefix="/posts", tags=["Posts"])
+router = APIRouter(prefix="/autogenerate", tags=["autogenerate-posts"])
 
 @router.post(
-    "/autogenerate",
+    "",
     status_code=status.HTTP_202_ACCEPTED,
 )
 def autogenerate_posts(
-    # user_data: schemas.TokenData = Depends(oauth2.get_current_user),  --не працює перевірка токена,він навіть не прилітає
+    user_data: schemas.TokenData = Depends(oauth2.get_current_user),  
 ):
-    id='6681af4ee34bc310b2fc93b5'
-    generate_posts.delay(id)
+    generate_posts.delay(user_data.id)
     return {"message":"Posts are generating"}
 
 
 
 @router.post(
-    "/autogenerate/daily",
+    "/daily",
     status_code=status.HTTP_202_ACCEPTED,
 )
-def generate_daily_posts(
+def start_generating_daily_posts(
     topic:str,
-    # user_data: schemas.TokenData = Depends(oauth2.get_current_user),
+    user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
-    id='6681af4ee34bc310b2fc93b5'
-    # generate_daily_posts.delay(id,topic)
-    return {"message":"Posts are generating"}
+    add_or_update_periodic_task(user_data.id,topic)
+    return {"message":"Task created successfully"}
