@@ -1,7 +1,6 @@
 from app.tasks import generate_posts,add_or_update_periodic_task
-from fastapi import status,APIRouter
+from fastapi import status,APIRouter,Depends
 from app import schemas,oauth2
-from fastapi import status,Depends
 
 
 router = APIRouter(prefix="/autogenerate", tags=["autogenerate-posts"])
@@ -23,7 +22,7 @@ def autogenerate_posts(
     status_code=status.HTTP_202_ACCEPTED,
 )
 def start_generating_daily_posts(
-    topic:str,
+    topic:str = None,
     user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
     add_or_update_periodic_task(user_data.id,topic)

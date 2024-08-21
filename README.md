@@ -28,12 +28,16 @@ This command will build and start the containers defined in your docker-compose.
 4. Apply database migrations using alembic:
 `alembic upgrade head`
 
-5. Run the FastAPI application using Uvicorn:
+5. Start celery worker and celery beat for async tasks:
+`celery -A app.tasks:celery beat -S redbeat.RedBeatScheduler --max-interval 30 --loglevel=info -l debug`
+`celery -A app.tasks:celery worker --loglevel=info --pool=solo`
+
+6. Run the FastAPI application using Uvicorn:
 `uvicorn app.main:app --reload`
 
-6. Once the server starts successfully, you can access the API endpoints from your browser or API testing tools like Postman or curl.
+7. Once the server starts successfully, you can access the API endpoints from your browser or API testing tools like Postman or curl.
 
-7. You can also access Swagger for service here http://127.0.0.1:8000/docs
+8. You can also access Swagger for service here http://127.0.0.1:8000/docs
 
 # Migrations:
 Database migrations are managed using Alembic. Migrations are stored in the migrations directory. You can generate and apply migrations using the following Alembic commands:
