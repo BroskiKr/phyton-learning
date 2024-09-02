@@ -11,8 +11,8 @@ class NewPost(BaseModel):
 
 
 class UpdatePost(BaseModel):
-    title: str
-    body: str
+    title: Optional[str] = None
+    body: Optional[str] = None
 
 
 class NewUser(BaseModel):
