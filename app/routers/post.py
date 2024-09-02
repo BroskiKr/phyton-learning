@@ -19,9 +19,14 @@ def read_posts(
     db: Session = Depends(get_db),
     user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
-    user = users_collection.find_one({"_id": ObjectId(user_data.id)})
+    
+    try:
+        user = users_collection.find_one({"_id": ObjectId(user_data.id)})
+    except:
+        user = {'email':'discorduser@gmail.com',
+                'id':user_data.id}
 
-    if user["last_name"] == "admin":
+    if user["email"] == "admin@gmail.com":
         total_count = db.query(models.Post).count()
         if limit > 0:
             posts = (
@@ -67,6 +72,7 @@ def read_posts(
             )
 
     response.headers["X-Total-Count"] = str(total_count)
+    print(posts)
     return posts
 
 
@@ -76,7 +82,7 @@ def read_post(
     db: Session = Depends(get_db),
     user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
-    post = db.query(models.Post).filter(models.Post.id == post_id).first()
+    post = db.query(models.Post).filter(models.Post.id == post_id,models.Post.owner_id == user_data.id).first()
     if post:
         return post
     raise HTTPException(
@@ -113,6 +119,10 @@ def update_post(
     post_query = db.query(models.Post).filter(models.Post.id == post_id)
     post = post_query.first()
     if post:
+        if not updatedPost.title:
+            updatedPost.title = post.title
+        if not updatedPost.body:
+            updatedPost.body = post.body
         post_query.update(updatedPost.dict(), synchronize_session=False)
         db.commit()
         db.refresh(post)
