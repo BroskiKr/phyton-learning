@@ -15,6 +15,7 @@ def convert_to_user_response(user_data):
         last_name=user_data["last_name"],
         email=user_data["email"],
         created_at=user_data["created_at"],
+        discord_id=user_data.get("discord_id"),
     )
 
 
@@ -53,13 +54,20 @@ def read_user(
 )
 def create_user(
     newUser: schemas.NewUser,
-    user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
     user_with_similar_email = users_collection.find_one({"email": newUser.email})
     if user_with_similar_email or newUser.email == "test@gmail.com":
         raise HTTPException(
             status_code=409, detail="User with this email already exists"
         )
+    if newUser.discord_id:
+        user_with_similar_discord = users_collection.find_one(
+            {"discord_id": newUser.discord_id}
+        )
+        if user_with_similar_discord:
+            raise HTTPException(
+                status_code=409, detail="User with this discord account already exists"
+            )
     hashed_password = utils.hash(newUser.password)
     newUser.password = hashed_password
     user = newUser.dict()

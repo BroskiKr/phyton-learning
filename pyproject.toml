@@ -49,6 +49,7 @@ urllib3 = "^2.2.2"
 uvicorn = "^0.30.6"
 websockets = "^12.0"
 celery-redbeat = "^2.2.0"
+discord-py = "^2.4.0"
 
 
 [build-system]

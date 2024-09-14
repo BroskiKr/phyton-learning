@@ -8,3 +8,5 @@ SECRET_KEY = config.get("SECRET_KEY")
 
 CLIENT_ID = config.get("CLIENT_ID")
 CLIENT_SECRET = config.get("CLIENT_SECRET")
+
+DISCORD_TOKEN = config.get("DISCORD_TOKEN")

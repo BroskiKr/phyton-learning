@@ -20,27 +20,18 @@ def read_posts(
     user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
     user = users_collection.find_one({"_id": ObjectId(user_data.id)})
-
-    if user["last_name"] == "admin":
+    if user["email"] == "admin@gmail.com":
         total_count = db.query(models.Post).count()
         if limit > 0:
             posts = (
                 db.query(models.Post)
-                .order_by(
-                    models.Post.id.desc()
-                )
+                .order_by(models.Post.id.desc())
                 .offset((page - 1) * limit)
                 .limit(limit)
                 .all()
             )
         else:
-            posts = (
-                db.query(models.Post)
-                .order_by(
-                    models.Post.id.desc()
-                )
-                .all()
-            )
+            posts = db.query(models.Post).order_by(models.Post.id.desc()).all()
     else:
         total_count = (
             db.query(models.Post).filter(models.Post.owner_id == user_data.id).count()
@@ -49,9 +40,7 @@ def read_posts(
             posts = (
                 db.query(models.Post)
                 .filter(models.Post.owner_id == user_data.id)
-                .order_by(
-                    models.Post.id.desc()
-                )
+                .order_by(models.Post.id.desc())
                 .offset((page - 1) * limit)
                 .limit(limit)
                 .all()
@@ -60,9 +49,7 @@ def read_posts(
             posts = (
                 db.query(models.Post)
                 .filter(models.Post.owner_id == user_data.id)
-                .order_by(
-                    models.Post.id.desc()
-                )
+                .order_by(models.Post.id.desc())
                 .all()
             )
 
@@ -76,7 +63,15 @@ def read_post(
     db: Session = Depends(get_db),
     user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
-    post = db.query(models.Post).filter(models.Post.id == post_id).first()
+    user = users_collection.find_one({"_id": ObjectId(user_data.id)})
+    if user["email"] == "admin@gmail.com":
+        post = db.query(models.Post).filter(models.Post.id == post_id).first()
+    else:
+        post = (
+            db.query(models.Post)
+            .filter(models.Post.id == post_id, models.Post.owner_id == user_data.id)
+            .first()
+        )
     if post:
         return post
     raise HTTPException(
@@ -110,9 +105,19 @@ def update_post(
     db: Session = Depends(get_db),
     user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
-    post_query = db.query(models.Post).filter(models.Post.id == post_id)
+    user = users_collection.find_one({"_id": ObjectId(user_data.id)})
+    if user["email"] == "admin@gmail.com":
+        post_query = db.query(models.Post).filter(models.Post.id == post_id)
+    else:
+        post_query = db.query(models.Post).filter(
+            models.Post.id == post_id, models.Post.owner_id == user_data.id
+        )
     post = post_query.first()
     if post:
+        if not updatedPost.title:
+            updatedPost.title = post.title
+        if not updatedPost.body:
+            updatedPost.body = post.body
         post_query.update(updatedPost.dict(), synchronize_session=False)
         db.commit()
         db.refresh(post)
@@ -130,7 +135,13 @@ def delete_post(
     db: Session = Depends(get_db),
     user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
-    post = db.query(models.Post).filter(models.Post.id == post_id)
+    user = users_collection.find_one({"_id": ObjectId(user_data.id)})
+    if user["email"] == "admin@gmail.com":
+        post = db.query(models.Post).filter(models.Post.id == post_id)
+    else:
+        post = db.query(models.Post).filter(
+            models.Post.id == post_id, models.Post.owner_id == user_data.id
+        )
     if post.first() == None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

@@ -21,12 +21,12 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     posts_table = sa.table(
-        'posts',
-        sa.column('title', sa.String),
-        sa.column('body', sa.String),
-        sa.column('owner_id', sa.Integer),
+        "posts",
+        sa.column("title", sa.String),
+        sa.column("body", sa.String),
+        sa.column("owner_id", sa.Integer),
     )
-    
+
     op.bulk_insert(
         posts_table,
         [
