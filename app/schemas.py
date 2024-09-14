@@ -20,6 +20,7 @@ class NewUser(BaseModel):
     last_name: str
     email: EmailStr
     password: str
+    discord_id: Optional[int] = None
 
 
 class UserResponse(BaseModel):
@@ -28,6 +29,7 @@ class UserResponse(BaseModel):
     last_name: str
     email: EmailStr
     created_at: datetime
+    discord_id: Optional[int] = None
 
 
 class PostResponse(NewPost):
