@@ -5,3 +5,7 @@
 
 __pycache__
 .coverage
+poetry.lock
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir

@@ -19,8 +19,14 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    users_table = sa.table(
+        'users',
+        sa.column('first_name', sa.String),
+        sa.column('last_name', sa.String),
+    )
+
     op.bulk_insert(
-        models.User.__table__,
+        users_table,
         [
             {
                 "first_name": "admin",

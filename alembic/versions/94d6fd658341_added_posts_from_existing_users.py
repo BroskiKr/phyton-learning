@@ -20,8 +20,15 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    posts_table = sa.table(
+        'posts',
+        sa.column('title', sa.String),
+        sa.column('body', sa.String),
+        sa.column('owner_id', sa.Integer),
+    )
+    
     op.bulk_insert(
-        models.Post.__table__,
+        posts_table,
         [
             {
                 "title": "How to Improve Concentration at Work",

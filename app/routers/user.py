@@ -22,8 +22,8 @@ def convert_to_user_response(user_data):
 @router.get("", response_model=List[schemas.UserResponse])
 def read_users(
     user_data: schemas.TokenData = Depends(oauth2.get_current_user),
-    limit:int = 10,
-    page:int = 1,
+    limit: int = 10,
+    page: int = 1,
 ):
     if limit > 0:
         users = users_collection.find().skip((page - 1) * limit).limit(limit)
@@ -33,7 +33,11 @@ def read_users(
 
 
 @router.get("/{user_id}", response_model=schemas.UserResponse)
-def read_user(user_id: str, user_data: schemas.TokenData = Depends(oauth2.get_current_user)):
+def read_user(
+    user_id: str, user_data: schemas.TokenData = Depends(oauth2.get_current_user)
+):
+    if user_id == "current":
+        user_id = user_data.id
     user = users_collection.find_one({"_id": ObjectId(user_id)})
     if user:
         return convert_to_user_response(user)
@@ -48,13 +52,13 @@ def read_user(user_id: str, user_data: schemas.TokenData = Depends(oauth2.get_cu
     "", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse
 )
 def create_user(
-    newUser: schemas.NewUser, user_data: schemas.TokenData = Depends(oauth2.get_current_user)
+    newUser: schemas.NewUser,
+    user_data: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
     user_with_similar_email = users_collection.find_one({"email": newUser.email})
-    if user_with_similar_email or newUser.email == 'test@gmail.com':
+    if user_with_similar_email or newUser.email == "test@gmail.com":
         raise HTTPException(
-            status_code=409,
-            detail="User with this email already exists"
+            status_code=409, detail="User with this email already exists"
         )
     hashed_password = utils.hash(newUser.password)
     newUser.password = hashed_password
@@ -88,7 +92,9 @@ def update_user(
 
 ##delete
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user(user_id: str, user_data: schemas.TokenData = Depends(oauth2.get_current_user)):
+def delete_user(
+    user_id: str, user_data: schemas.TokenData = Depends(oauth2.get_current_user)
+):
     user = users_collection.find_one({"_id": ObjectId(user_id)})
     if user == None:
         raise HTTPException(
