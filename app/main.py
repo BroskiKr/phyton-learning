@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import user, post, auth, googleAuth,generating_posts
+from app.routers import user, post, auth, googleAuth, generating_posts
 from fastapi.middleware.cors import CORSMiddleware
 
 
