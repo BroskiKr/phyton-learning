@@ -8,23 +8,12 @@ services:
     volumes:
       - mongo-data:/data/db
 
-  mongo-init:
-    image: python:3.8-slim
-    volumes:
-      - ./init-MongoDb.py:/init-MongoDb.py
-    depends_on:
-      - mongo
-    entrypoint:
-      - /bin/sh
-      - -c
-      - pip install pymongo && python /init-MongoDb.py
-
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: pass123
-      POSTGRES_DB: FastAPI
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5433:5432"
     volumes:
@@ -35,8 +24,22 @@ services:
     ports:
       - "6379:6379"
 
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+      - mongo
+    volumes:
+      - app:/app
+    env_file:
+      - .env
+
 volumes:
   mongo-data:
   postgres-data:
-
-
+  app:

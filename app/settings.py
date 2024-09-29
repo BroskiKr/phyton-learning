@@ -1,12 +1,9 @@
-from dotenv import dotenv_values
+import os
 
-config = dotenv_values(".env")
-SQLALCHEMY_DATABASE_URL = config.get("SQLALCHEMY_DATABASE_URL")
-MONGODB_URL = config.get("MONGODB_URL")
+SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL_DOCKER")
+MONGODB_URL = os.getenv("MONGODB_URL_DOCKER")
+SECRET_KEY = os.getenv("SECRET_KEY")
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
-SECRET_KEY = config.get("SECRET_KEY")
-
-CLIENT_ID = config.get("CLIENT_ID")
-CLIENT_SECRET = config.get("CLIENT_SECRET")
-
-DISCORD_TOKEN = config.get("DISCORD_TOKEN")
