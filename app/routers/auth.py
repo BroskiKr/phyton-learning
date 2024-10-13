@@ -8,7 +8,7 @@ router = APIRouter(prefix="/login", tags=["Login"])
 
 @router.post("/", response_model=schemas.Token)
 def login(user_login: OAuth2PasswordRequestForm = Depends()):
-    user = users_collection.find_one({"last_name": user_login.username})
+    user = users_collection.find_one({"email": user_login.username})
     if not user:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid input"

@@ -25,9 +25,7 @@ services:
       - "6379:6379"
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: andrewkr9/phyton-learning-web:latest
     ports:
       - "8000:8000"
     depends_on:
