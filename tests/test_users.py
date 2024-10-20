@@ -16,7 +16,6 @@ def get_user_test1_id():
 def test_create_user(auth_header):
     res = client.post(
         "/users",
-        headers=auth_header,
         json={
             "first_name": "Test1",
             "last_name": "Test1",

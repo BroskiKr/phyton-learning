@@ -8,7 +8,7 @@ from redbeat.schedules import rrule
 from datetime import datetime
 
 
-celery = Celery("tasks", broker="redis://localhost:6379")
+celery = Celery("tasks", broker="redis://redis:6379")
 
 celery.conf.broker_connection_retry_on_startup = True
 
