@@ -2,7 +2,7 @@ FROM python:3.9-slim
 
 WORKDIR /my-project
 
-COPY pyproject.toml poetry.lock /my-project/
+COPY pyproject.toml /my-project/
 
 RUN pip install poetry
 RUN poetry install
